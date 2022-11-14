@@ -32,7 +32,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   Widget build(BuildContext context) {
       return Scaffold(
         key: scaffoldKey,
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFFF1F4F8),
         endDrawer: const Drawer(
           elevation: 16,
         ),
@@ -351,12 +351,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFFF8F2F2)
                                             )
-                                          // style: FlutterFlowTheme.of(context)
-                                          //     .bodyText1
-                                          //     .override(
-                                          //   fontFamily: 'Poppins',
-                                          //   color: Color(0xFFF8F2F2),
-                                          // ),
                                         )),
                                   ),
                                 ],
@@ -378,35 +372,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               },
                           ),
                         ),
-                        // OutlinedButton(onPressed: () {
-                        //       print('blue button pressed ...');
-                        //     },
-                        //     child: Text(''),
-                        //     style: OutlinedButton.styleFrom(
-                        //       minimumSize: Size.fromHeight(double.infinity),
-                        //     ),
-                        // ),
-                        // FFButtonWidget(
-                        //   onPressed: () {
-                        //     print('Button pressed ...');
-                        //   },
-                        //   text: '',
-                        //   options: FFButtonOptions(
-                        //     width: double.infinity,
-                        //     height: double.infinity,
-                        //     color: Color(0x004B39EF),
-                        //     textStyle:
-                        //     FlutterFlowTheme.of(context).subtitle2.override(
-                        //       fontFamily: 'Poppins',
-                        //       color: Colors.white,
-                        //     ),
-                        //     borderSide: BorderSide(
-                        //       color: Colors.transparent,
-                        //       width: 1,
-                        //     ),
-                        //     borderRadius: BorderRadius.circular(30),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -590,8 +555,722 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ],
                       ),
                     ),
+
                   ],
-                )
+                ),
+                Padding(
+                    padding:  const EdgeInsetsDirectional.fromSTEB(18, 20, 18, 0),
+                    child: Container(
+                        width: 100,
+                        height: 220,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 4,
+                              color: Color(0x33000000),
+                              offset: Offset(0, 2),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Stack(
+                            children: [
+                              Align(
+                                alignment: const AlignmentDirectional(0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: Image.network(
+                                        'https://media.istockphoto.com/id/1305963775/vector/male-doctor-is-checking-medical-history-of-a-patient.jpg?s=612x612&w=0&k=20&c=QCzklF30ugWO-t7LVF0tJ5j-Gk4RlZIISeZ3-6Jlzik=',
+                                        width: double.infinity,
+                                        height: 180,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const Align(
+                                      alignment: AlignmentDirectional(0, 0),
+                                      child: Padding(
+                                        padding:
+                                        EdgeInsetsDirectional.fromSTEB(0, 0, 8, 10),
+                                        child: SelectionArea(
+                                            child: Text(
+                                                'Get free medical report analysis ',
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.normal
+                                                )
+                                            )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: double.infinity,
+                                width: double.infinity,
+                                child:   OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                  ),
+                                  child: const Text(''),
+                                  onPressed: () {
+                                    print('works_medical_report???');
+                                  },
+                                ),
+                              ),
+                            ]
+                        )
+                    )
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 25, 0, 15),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF1F4F8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Icon(
+                          Icons.sick,
+                          color: Color(0xFF29157A),
+                          size: 40,
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            SelectionArea(
+                                child: Text(
+                                  'Not feeling too well?',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold
+                                  )
+                                )),
+                            SelectionArea(
+                                child: Text(
+                                  'Treat common symtops with top specialists',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize:14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF57636C)
+                                  )
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 95,
+                  height: 120,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF1F4F8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 95,
+                        height: 100,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1F4F8),
+                        ),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: const AlignmentDirectional(0, 0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Container(
+                                    width: 75,
+                                    height: 75,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.network(
+                                      'https://t1.thpservices.com/previewimage/gallil/f3b8fe2d72c92e4e468cefb96e0a9c57/esy-057855656.jpg',
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  const SelectionArea(
+                                      child: Text(
+                                        'Pimples &\nAcne',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF808386),
+                                        )
+                                      )),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: double.infinity,
+                              width: double.infinity,
+                              child:   OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                ),
+                                child: const Text(''),
+                                onPressed: () {
+                                  print('button 1 works');
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 95,
+                        height: 100,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1F4F8),
+                        ),
+                        child: Container(
+                          width: 95,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF1F4F8),
+                          ),
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: const AlignmentDirectional(0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 75,
+                                      height: 75,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Image.network(
+                                        'https://i.ytimg.com/vi/zi4thNp15qg/hqdefault.jpg',
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const SelectionArea(
+                                        child: Text(
+                                          'Breathing\nProblems',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF808386),
+                                            )
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: double.infinity,
+                                width: double.infinity,
+                                child:   OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                  ),
+                                  child: const Text(''),
+                                  onPressed: () {
+                                    print('button 2 works');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 95,
+                        height: 100,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1F4F8),
+                        ),
+                        child: Container(
+                          width: 95,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF1F4F8),
+                          ),
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 75,
+                                      height: 75,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Image.network(
+                                        'https://img.freepik.com/premium-vector/cartoon-girl-anime-style-sports-uniform-shorts-tshirt-vector-art-toddler-character_456865-1280.jpg?w=2000',
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const SelectionArea(
+                                        child: Text(
+                                          'Sickness in\ntoddlers',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF808386),
+                                            )
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: double.infinity,
+                                width: double.infinity,
+                                child:   OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                  ),
+                                  child: const Text(''),
+                                  onPressed: () {
+                                    print('button 3 works');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 95,
+                        height: 100,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1F4F8),
+                        ),
+                        child: Container(
+                          width: 95,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF1F4F8),
+                          ),
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: const AlignmentDirectional(0, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 75,
+                                      height: 75,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Image.network(
+                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAOZIC6mWlKV_Z6cGPOITSjK4tKVNtDmlKXA&usqp=CAU',
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const SelectionArea(
+                                        child: Text(
+                                          'Fever',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF808386),
+                                            )
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: double.infinity,
+                                width: double.infinity,
+                                child:   OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                  ),
+                                  child: const Text(''),
+                                  onPressed: () {
+                                    print('button 4 works');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                  child: Container(
+                    width: 95,
+                    height: 120,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF1F4F8),
+                    ),
+                    child: Container(
+                      width: 95,
+                      height: 120,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF1F4F8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            width: 95,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF1F4F8),
+                            ),
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: const AlignmentDirectional(0, 0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Container(
+                                        width: 75,
+                                        height: 75,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Image.network(
+                                          'https://images.saymedia-content.com/.image/t_share/MTc0MTY5OTE0NTYxODAwMDYw/how-to-draw-a-cartoon-eye.jpg',
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      const SelectionArea(
+                                          child: Text(
+                                            'Icthy eyes',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF808386),
+                                              )
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  child:   OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                    ),
+                                    child: const Text(''),
+                                    onPressed: () {
+                                      print('button 5 works');
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 95,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF1F4F8),
+                            ),
+                            child: Container(
+                              width: 95,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF1F4F8),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: const AlignmentDirectional(0, 0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Container(
+                                          width: 75,
+                                          height: 75,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            'https://media.istockphoto.com/id/1125874619/vector/human-heart-with-arteries-and-valves-vector-cartoon-illustration-of-anatomy-internal-organ.jpg?s=612x612&w=0&k=20&c=z0o-Vr-_gq_MBSwvMdgal8zZBo7GmNf6htrZ-BBnx8M=',
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                        const SelectionArea(
+                                            child: Text(
+                                              'Hypertension',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF808386),
+                                                )
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    child:   OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                      ),
+                                      child: const Text(''),
+                                      onPressed: () {
+                                        print('button 6 works');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 95,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF1F4F8),
+                            ),
+                            child: Container(
+                              width: 95,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF1F4F8),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: const AlignmentDirectional(0, 0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Container(
+                                          width: 75,
+                                          height: 75,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            'https://image.shutterstock.com/image-vector/young-teenager-woman-suffering-migraine-260nw-1490258219.jpg',
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                        const SelectionArea(
+                                            child: Text(
+                                              'Headache',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF808386),
+                                                )
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    child:   OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                      ),
+                                      child: const Text(''),
+                                      onPressed: () {
+                                        print('button 7 works');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 95,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF1F4F8),
+                            ),
+                            child: Container(
+                              width: 95,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF1F4F8),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: const AlignmentDirectional(0, 0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Container(
+                                          width: 75,
+                                          height: 75,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            'https://us.123rf.com/450wm/jemastock/jemastock2004/jemastock200409457/144571156-man-sick-with-chest-pain-covid19-symptom-vector-illustration-design.jpg?ver=6',
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                        const SelectionArea(
+                                            child: Text(
+                                              'Pain in chest',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF808386),
+                                                )
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    child:   OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          side: const BorderSide(width: 0.0, color: Colors.transparent)
+                                      ),
+                                      child: const Text(''),
+                                      onPressed: () {
+                                        print('button 8 works');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 15),
+                  child: Container(
+                    width: 100,
+                    height: 80,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF1F4F8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+                      child: SizedBox(
+                        height: 40,
+                        width: 130,
+                        child:   OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(width: 1.0, color: Colors.black)
+                          ),
+                          child: const Text('View all symptoms',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            )
+                          ),
+                          onPressed: () {
+                            print('viwe symp');
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  width: 100,
+                  height: 220,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF202871),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: const [
+                      SelectionArea(
+                          child: Text(
+                            '[Application name]',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                            )
+                          )),
+                      SelectionArea(
+                          child: Text(
+                            'Made by:',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              )
+                          )),
+                      SelectionArea(
+                          child: Text(
+                            'Shivang Negi\nShivam Rana\nPriyanshu Goyal\nRahul Negi',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              )
+                          )),
+                    ],
+                  ),
+                ),
 
               ],
             ),
