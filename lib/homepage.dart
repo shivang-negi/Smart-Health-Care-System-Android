@@ -530,11 +530,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                           fontSize: 10,
                                           color: Color(0xFF808386),
                                         )
-                                      // style: FlutterFlowTheme.of(context).bodyText1.override(
-                                      //   fontFamily: 'Poppins',
-                                      //   color: Color(0xFF808386),
-                                      //   fontSize: 10,
-                                      // ),
                                     )),
                               ),
                             ],
