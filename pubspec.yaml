@@ -38,14 +38,18 @@ flutter:
     - assets/3.jpg
 
   fonts:
-   - family: Poppins
-     fonts:
+    - family: Lexend
+      fonts:
+        - asset: assets/fonts/lexend_deca.ttf
+
+    - family: Poppins
+      fonts:
        - asset: assets/fonts/Poppins-Regular.ttf
 
-   - family: Outfit
-     fonts:
+    - family: Outfit
+      fonts:
        - asset: assets/fonts/Outfit-Regular.ttf
 
-   - family: pbold
-     fonts:
+    - family: pbold
+      fonts:
        - asset: assets/fonts/pbold.ttf

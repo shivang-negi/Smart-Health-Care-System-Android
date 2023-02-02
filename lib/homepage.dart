@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'BookAppointment.dart';
+import 'profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomePageWidget extends StatefulWidget {
   final String number;
@@ -96,7 +96,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   backgroundColor: const Color(0xFFFFFFFF),
                   minimumSize: const Size.fromHeight(40),
                 ),
-                onPressed: (){print("your profile");},
+                onPressed: (){
+                  print("your profile");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage(
+                        name: name,
+                        number: widget.number,
+                        age: age,
+                        city: city,
+                        state: state,
+                        email: email,
+                        profile: profilepic)),
+                  );
+                  },
                 child: const Text("Your Profile",
                     style: TextStyle(
                         color: Color(0xFF000000),
