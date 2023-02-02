@@ -1,13 +1,38 @@
+import 'package:app/CheckUserSignIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'register.dart';
 
-class LoginFirst extends StatelessWidget {
+class LoginFirst extends StatefulWidget {
   LoginFirst({Key?key}) : super(key:key);
   static String verify = "";
+
+  @override
+  State<LoginFirst> createState() => _LoginFirstState();
+}
+
+class _LoginFirstState extends State<LoginFirst> {
   final phoneNumber = TextEditingController();
+  bool signedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserLoggedInStatus();
+  }
+
+  getUserLoggedInStatus() async {
+    await CheckUserSignIn.getUserSignInStatus().then((value) {
+      if(value!=null) {
+        signedIn = value;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +147,18 @@ class LoginFirst extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     var str = phoneNumber.text;
+                    if(str.length!=10) {
+                      Fluttertoast.showToast(
+                          msg: "Phone Number must be 10 digits",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 5,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                      return;
+                    }
                     // print(str);
                     await FirebaseAuth.instance.verifyPhoneNumber(
                       phoneNumber: '+91$str',
@@ -132,7 +169,7 @@ class LoginFirst extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context)=> OtpWindow(text: str,)
+                                builder: (context)=> OtpWindow(text: str)
                             )
                         );
                       },
@@ -355,12 +392,26 @@ class _OtpWindowState extends State<OtpWindow> {
                   PhoneAuthCredential credential = PhoneAuthProvider.credential(
                       verificationId: LoginFirst.verify, smsCode: code);
                   await auth.signInWithCredential(credential);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context)=> const HomePageWidget()
-                      )
-                  );
+
+                  final query = await FirebaseFirestore.instance
+                      .collection('Users')
+                      .limit(10)
+                      .where('Phone Number', isEqualTo: widget.text)
+                      .get();
+
+                  if(query.docs.isEmpty) {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context)=> RegisterWidget(number: widget.text)
+                    ));
+                  }
+                  else {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setString('Phone_Number', widget.text);
+                    Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context)=> HomePageWidget(
+                          number: widget.text)
+                    ));
+                  }
                 }
                 catch(e) {
                   Fluttertoast.showToast(

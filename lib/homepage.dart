@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
+import 'BookAppointment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({Key? key}) : super(key: key);
+  final String number;
+  const HomePageWidget({Key? key,required this.number}) : super(key: key);
 
   @override
   _HomePageWidgetState createState() => _HomePageWidgetState();
@@ -14,10 +18,25 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   TextEditingController? textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String name = "", city = "", state = "";
+  int age = 0;
+
   @override
   void initState() {
     super.initState();
     textController = TextEditingController();
+    () async {
+      final query = await FirebaseFirestore.instance
+          .collection('Users')
+          .limit(1)
+          .where('Phone Number', isEqualTo: widget.number)
+          .get();
+      name = query.docs[0]['Name'];
+      city = query.docs[0]['City'];
+      age = query.docs[0]['Age'];
+      state = query.docs[0]['State'];
+      setState(() {});
+    } ();
   }
 
   @override
@@ -31,8 +50,135 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: const Color(0xFFF1F4F8),
-      endDrawer: const Drawer(
+      endDrawer: Drawer(
         elevation: 16,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+              child:
+                Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 90,
+                    height: 90,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.network(
+                      'https://picsum.photos/seed/920/600',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Text(
+                    '$name\n+91 ${widget.number}',
+                    style: TextStyle(
+                      color: Color(0xFF000000),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFFFFF),
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: (){print("your profile");},
+                child: const Text("Your Profile",
+                    style: TextStyle(
+                        color: Color(0xFF000000),
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold
+                    )
+                )
+              )
+            ),
+            Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: (){print("your Appointments");},
+                    child: const Text("Appointments",
+                        style: TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold
+                        )
+                    )
+                )
+            ),
+            Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: (){print("your orders");},
+                    child: const Text("Your Orders",
+                        style: TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold
+                        )
+                    )
+                )
+            ),
+            Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: (){print("medical record");},
+                    child: const Text("Medical Records",
+                        style: TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold
+                        )
+                    )
+                )
+            ),
+            Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 40, 0, 0),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFFFFF),
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: () async {
+                      print("Log Out");
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.remove('Phone_Number');
+                      Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context)=>LoginFirst()));
+                      },
+                    child: const Text("Log out",
+                        style: TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold
+                        )
+                    )
+                )
+            ),
+          ],
+        )
       ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF050212),
@@ -366,11 +512,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           ),
                           child: const Text(''),
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context)=> const SecondRoute()),
-                            // );
-                            print('works???');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context)=> const Appointment()),
+                            );
+                            print('works1???');
                           },
                         ),
                       ),

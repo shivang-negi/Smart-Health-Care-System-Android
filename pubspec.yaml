@@ -18,6 +18,9 @@ dependencies:
   firebase_auth: ^4.1.4
   firebase_core: ^2.3.0
   fluttertoast: ^8.1.1
+  cloud_firestore: ^4.1.0
+  shared_preferences: ^2.0.15
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +36,10 @@ flutter:
    - family: Poppins
      fonts:
        - asset: assets/fonts/Poppins-Regular.ttf
+
+   - family: Outfit
+     fonts:
+       - asset: assets/fonts/Outfit-Regular.ttf
 
    - family: pbold
      fonts:

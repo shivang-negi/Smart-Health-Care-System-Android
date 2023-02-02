@@ -1,10 +1,17 @@
+import 'package:app/homepage.dart';
+import 'package:app/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'CheckUserSignIn.dart';
+import 'BookAppointment.dart';
 import 'login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp();
-  runApp(MaterialApp(home: LoginFirst()));
+  var number = prefs.getString('Phone_Number');
+  runApp(MaterialApp(home: number==null?LoginFirst():HomePageWidget(number: number)));
 }
