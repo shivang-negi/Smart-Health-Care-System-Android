@@ -13,5 +13,10 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp();
   var number = prefs.getString('Phone_Number');
-  runApp(MaterialApp(home: number==null?LoginFirst():HomePageWidget(number: number)));
+  // runApp(MaterialApp(home: RegisterWidget(number: 'adfs',)));
+  if(number==null) {
+    runApp(MaterialApp(home: LoginFirst()));
+  } else {
+    runApp(MaterialApp(home: HomePageWidget(number: number)));
+  }
 }

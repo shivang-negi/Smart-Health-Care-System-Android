@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 
 class RegisterWidget extends StatefulWidget {
   final String number;
@@ -13,7 +17,7 @@ class RegisterWidget extends StatefulWidget {
 }
 
 class _RegisterWidgetState extends State<RegisterWidget> {
-  bool isMediaUploading = false;
+  String media = '';
   String uploadedFileUrl = '';
 
   String stateValue = "";
@@ -22,6 +26,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   final cityController1 = TextEditingController();
   final yourNameController = TextEditingController();
   final ageController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,6 +34,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     yourNameController.dispose();
     ageController.dispose();
     super.dispose();
+  }
+
+  bool isEmail(String em) {
+    String p = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regExp = new RegExp(p);
+    return regExp.hasMatch(em);
   }
 
   String val = "State";
@@ -114,7 +125,21 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () async {},
+                    onTap: () async {
+                      final result = await FilePicker.platform.pickFiles(
+                        allowMultiple: false,
+                        type: FileType.image
+                      );
+                      if(result==null) {
+                        print("DIDN'T PICK ANY");
+                        return;
+                      }
+
+                      uploadedFileUrl = result.files.first.path.toString();
+                      media = uploadedFileUrl;
+                      print(uploadedFileUrl);
+                      setState(() {});
+                    },
                     child: Container(
                       width: 100,
                       height: 100,
@@ -131,10 +156,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
-                          child: Image.network(
-                            'https://thumbs.dreamstime.com/b/upload-profile-thin-line-vector-icon-upload-profile-vector-icon-elements-mobile-concept-web-apps-thin-line-icons-146032604.jpg',
-                            fit: BoxFit.cover,
-                          ),
+                          // child: Image(image: );
+                          child: media==''?Image.asset('assets/default.jpg'):Image.file(File(media)),
                         ),
                       ),
                     ),
@@ -361,6 +384,67 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 keyboardType: TextInputType.number,
               ),
             ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 5),
+              child: TextFormField(
+                controller: emailController,
+                obscureText: false,
+                decoration: InputDecoration(
+                  labelText: 'E-Mail',
+                  labelStyle: const TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Color(0xFF57636C),
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  hintStyle: const TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Color(0xFF57636C),
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0xFFF1F4F8),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0xFFF1F4F8),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0x00000000),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0x00000000),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+                ),
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Color(0xFF101213),
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+                maxLines: null,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ),
             Align(
               alignment: const AlignmentDirectional(0, 0.05),
               child: Padding(
@@ -369,7 +453,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   onPressed: () async {
                     String name = yourNameController.text.trim();
                     String city = cityController1.text.trim();
-                    if(name=="" || city=="" || ageController.text.trim()=="" || stateValue=="") {
+                    String email = emailController.text.trim();
+                    if(name=="" || city=="" || ageController.text.trim()=="" || stateValue=="" || email=="" || isEmail(email)==false) {
                       Fluttertoast.showToast(
                           msg: "Invalid Data",
                           toastLength: Toast.LENGTH_SHORT,
@@ -379,34 +464,50 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
-                      // final query = await FirebaseFirestore.instance
-                      //     .collection('Users')
-                      //     .limit(10)
-                      //     .where('Phone Number', isEqualTo: '+91121')
-                      //     .get();
-
-                      // if(query.docs.isEmpty) print("not exist");
-                      // for (var doc in query.docs) {
-                      //   String name = doc.get('Name');
-                      //
-                      //   print(name);
-                      // }
                     }
                     else {
+                      String profile = '';
+                      if(uploadedFileUrl!='') {
+                        File file = File(uploadedFileUrl);
+                        Reference refer = FirebaseStorage.instance.ref();
+                        Reference ref_dir = refer.child('images');
+
+                        Reference upload = ref_dir.child(DateTime.now().toIso8601String());
+                        try {
+                          await upload.putFile(file);
+                          profile = await upload.getDownloadURL();
+                        } catch (e) {
+                          Fluttertoast.showToast(
+                              msg: "Error uploading image, try again",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 5,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                              return;
+                        }
+                      }
                       await FirebaseFirestore.instance.collection('Users').add({
                         'Name': name,
                         'City': city,
                         'State': stateValue,
                         'Age': int.parse(ageController.text.trim()),
-                        'Phone Number': widget.number
+                        'Phone Number': widget.number,
+                        'Profile': profile,
+                        'E-Mail': email
                       });
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setString('Phone_Number', widget.number);
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context)=> HomePageWidget(
-                            number: widget.number
-                          )
-                      ));
+                      Navigator.pushAndRemoveUntil<dynamic>(
+                        context,
+                        MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) => HomePageWidget(
+                              number: widget.number
+                          ),
+                        ),
+                            (route) => false,//if you want to disable back feature set to false
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

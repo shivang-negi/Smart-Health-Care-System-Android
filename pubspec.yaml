@@ -21,6 +21,8 @@ dependencies:
   cloud_firestore: ^4.1.0
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.3
+  firebase_storage: ^11.0.10
+  file_picker: ^5.2.5
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +32,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-   - assets/
+    - assets/default.jpg
+    - assets/1.jpg
+    - assets/2.jpg
+    - assets/3.jpg
 
   fonts:
    - family: Poppins

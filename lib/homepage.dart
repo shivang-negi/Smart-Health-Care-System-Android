@@ -18,7 +18,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   TextEditingController? textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String name = "", city = "", state = "";
+  String name = "", city = "", state = "", profilepic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
+  String email = "";
   int age = 0;
 
   @override
@@ -35,6 +36,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       city = query.docs[0]['City'];
       age = query.docs[0]['Age'];
       state = query.docs[0]['State'];
+      email = query.docs[0]['E-Mail'];
+      if(query.docs[0]['Profile']!='') profilepic = query.docs[0]['Profile'];
       setState(() {});
     } ();
   }
@@ -71,7 +74,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       shape: BoxShape.circle,
                     ),
                     child: Image.network(
-                      'https://picsum.photos/seed/920/600',
+                      profilepic,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -365,9 +368,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://media.istockphoto.com/id/1208368866/vector/daily-skin-care-vector-illustration-line-style.jpg?s=612x612&w=0&k=20&c=1qAzu7hfs5oTjPRfRpHSJ9XiPTjFJ_K-bVhOEMbWd5o=',
-                                    ),
+                                    child: Image.asset('assets/1.jpg'),
                                   ),
                                 ),
                                 Padding(
@@ -380,9 +381,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://i.pinimg.com/564x/80/0c/a3/800ca3d3d1c4c4241f2b920d1eda6897.jpg',
-                                    ),
+                                    child: Image.asset('assets/2.jpg'),
                                   ),
                                 ),
                                 Padding(
@@ -394,9 +393,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://www.creativehatti.com/wp-content/uploads/2021/08/Heart-is-with-the-stethoscope-illustration-15-small.jpg',
-                                    ),
+                                    child: Image.asset('assets/3.jpg'),
                                   ),
                                 ),
                                 const Padding(

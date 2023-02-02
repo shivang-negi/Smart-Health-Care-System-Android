@@ -407,10 +407,15 @@ class _OtpWindowState extends State<OtpWindow> {
                   else {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.setString('Phone_Number', widget.text);
-                    Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context)=> HomePageWidget(
-                          number: widget.text)
-                    ));
+                    Navigator.pushAndRemoveUntil<dynamic>(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                        builder: (BuildContext context) => HomePageWidget(
+                            number: widget.text
+                        ),
+                      ),
+                          (route) => false,//if you want to disable back feature set to false
+                    );
                   }
                 }
                 catch(e) {
