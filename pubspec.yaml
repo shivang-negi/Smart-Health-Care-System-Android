@@ -32,10 +32,52 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/default.jpg
-    - assets/1.jpg
-    - assets/2.jpg
-    - assets/3.jpg
+    - assets/images/default.jpg
+    - assets/images/1.jpg
+    - assets/images/2.jpg
+    - assets/images/3.jpg
+    - assets/images/doctor.png
+    - assets/images/medicine.png
+    - assets/images/report.png
+    - assets/images/icon1.png
+    - assets/images/icon2.png
+    - assets/images/icon3.png
+    - assets/images/icon4.png
+    - assets/images/icon5.png
+    - assets/images/icon6.png
+    - assets/images/icon7.png
+    - assets/images/icon8.png
+    - assets/images/symp/1.png
+    - assets/images/symp/2.png
+    - assets/images/symp/3.png
+    - assets/images/symp/4.png
+    - assets/images/symp/5.png
+    - assets/images/symp/6.png
+    - assets/images/symp/7.png
+    - assets/images/symp/8.png
+    - assets/images/symp/9.png
+    - assets/images/symp/10.png
+    - assets/images/symp/11.png
+    - assets/images/symp/12.png
+    - assets/images/symp/13.png
+    - assets/images/symp/14.png
+    - assets/images/symp/15.png
+    - assets/images/symp/16.png
+    - assets/images/symp/17.png
+    - assets/images/symp/18.png
+    - assets/images/symp/19.png
+    - assets/images/symp/20.png
+    - assets/images/symp/21.png
+    - assets/images/symp/22.png
+    - assets/images/symp/23.png
+    - assets/images/symp/24.png
+    - assets/images/symp/25.png
+    - assets/images/symp/26.png
+    - assets/images/symp/27.png
+    - assets/images/symp/28.png
+    - assets/images/symp/29.png
+    - assets/images/symp/30.png
+    - assets/images/symp/31.png
 
   fonts:
     - family: Lexend

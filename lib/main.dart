@@ -8,6 +8,7 @@ import 'BookAppointment.dart';
 import 'login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profile.dart';
+import 'Symptoms.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,5 +20,5 @@ void main() async {
   } else {
     runApp(MaterialApp(home: HomePageWidget(number: number)));
   }
-  // runApp(MaterialApp(home: ProfilePage(name: 'shivang',age: 1, city: 'city',state: 'state',profile: "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",number: '955',email: 'shi@shi',)));
+  // runApp(const MaterialApp(home: Symptoms()));
 }

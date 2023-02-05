@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'BookAppointment.dart';
 import 'profile.dart';
+import 'Symptoms.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePageWidget extends StatefulWidget {
@@ -80,7 +81,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   ),
                   Text(
                     '$name\n+91 ${widget.number}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0xFF000000),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold
@@ -255,10 +256,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       Padding(
                         padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                         child: ElevatedButton(
-                          // borderColor: Colors.transparent,
-                          // borderRadius: 30,
-                          // borderWidth: 1,
-                          // buttonSize: 60,
                           style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
                               backgroundColor: const Color(0xFFFFFFFF),
@@ -381,7 +378,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.asset('assets/1.jpg'),
+                                    child: Image.asset('assets/images/1.jpg'),
                                   ),
                                 ),
                                 Padding(
@@ -394,7 +391,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.asset('assets/2.jpg'),
+                                    child: Image.asset('assets/images/2.jpg'),
                                   ),
                                 ),
                                 Padding(
@@ -406,7 +403,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.asset('assets/3.jpg'),
+                                    child: Image.asset('assets/images/3.jpg'),
                                   ),
                                 ),
                                 const Padding(
@@ -467,12 +464,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                               fontWeight: FontWeight.bold,
                                               color: Color(0xFFF8F2F2)
                                           )
-                                        // style: FlutterFlowTheme.of(context)
-                                        //     .bodyText1
-                                        //     .override(
-                                        //   fontFamily: 'Poppins',
-                                        //   color: Color(0xFFF8F2F2),
-                                        // ),
                                       )),
                                 ),
                                 Padding(
@@ -486,12 +477,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                               fontWeight: FontWeight.bold,
                                               color: Color(0xFFF8F2F2)
                                           )
-                                        // style: FlutterFlowTheme.of(context)
-                                        //     .bodyText1
-                                        //     .override(
-                                        //   fontFamily: 'Poppins',
-                                        //   color: Color(0xFFF8F2F2),
-                                        // ),
                                       )),
                                 ),
                                 Padding(
@@ -569,12 +554,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   topLeft: Radius.circular(50),
                                   topRight: Radius.circular(50),
                                 ),
-                                child: Image.network(
-                                  'https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/01/23/11/video-doctor-230119.jpg?quality=75&width=982&height=726&auto=webp',
-                                  width: 165,
+                                child: Image.asset(
+                                  'assets/images/doctor.png',
+                                      width: 165,
                                   height: 160,
-                                  fit: BoxFit.cover,
-                                ),
+                                  fit: BoxFit.cover
+                                )
+                                // child: Image.network(
+                                //   'https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/01/23/11/video-doctor-230119.jpg?quality=75&width=982&height=726&auto=webp',
+                                //   width: 165,
+                                //   height: 160,
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                               const Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(13, 0, 0, 0),
@@ -616,7 +607,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             ),
                             child: const Text(''),
                             onPressed: () {
-                              print('works111???');
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const Symptoms()));
                             },
                           ),
                         ),
@@ -654,12 +645,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   topLeft: Radius.circular(50),
                                   topRight: Radius.circular(50),
                                 ),
-                                child: Image.network(
-                                  'https://media.istockphoto.com/id/1300036753/photo/falling-antibiotics-healthcare-background.jpg?s=612x612&w=0&k=20&c=oquxJiLqE33ePw2qML9UtKJgyYUqjkLFwxT84Pr-WPk=',
-                                  width: 165,
-                                  height: 160,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: Image.asset(
+                                    'assets/images/medicine.png',
+                                    width: 165,
+                                    height: 160,
+                                    fit: BoxFit.cover
+                                )
+                                // child: Image.network(
+                                //   'https://media.istockphoto.com/id/1300036753/photo/falling-antibiotics-healthcare-background.jpg?s=612x612&w=0&k=20&c=oquxJiLqE33ePw2qML9UtKJgyYUqjkLFwxT84Pr-WPk=',
+                                //   width: 165,
+                                //   height: 160,
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                               const Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(0, 6, 75, 0),
@@ -738,12 +735,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(30),
-                                    child: Image.network(
-                                      'https://media.istockphoto.com/id/1305963775/vector/male-doctor-is-checking-medical-history-of-a-patient.jpg?s=612x612&w=0&k=20&c=QCzklF30ugWO-t7LVF0tJ5j-Gk4RlZIISeZ3-6Jlzik=',
-                                      width: double.infinity,
-                                      height: 180,
-                                      fit: BoxFit.fill,
-                                    ),
+                                    child: Image.asset(
+                                        'assets/images/report.png',
+                                        width: double.infinity,
+                                        height: 180,
+                                        fit: BoxFit.fill
+                                    )
+                                    // child: Image.network(
+                                    //   'https://media.istockphoto.com/id/1305963775/vector/male-doctor-is-checking-medical-history-of-a-patient.jpg?s=612x612&w=0&k=20&c=QCzklF30ugWO-t7LVF0tJ5j-Gk4RlZIISeZ3-6Jlzik=',
+                                    //   width: double.infinity,
+                                    //   height: 180,
+                                    //   fit: BoxFit.fill,
+                                    // ),
                                   ),
                                   const Align(
                                     alignment: AlignmentDirectional(0, 0),
@@ -860,10 +863,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Image.network(
-                                    'https://t1.thpservices.com/previewimage/gallil/f3b8fe2d72c92e4e468cefb96e0a9c57/esy-057855656.jpg',
-                                    fit: BoxFit.fill,
+                                  child: Image.asset(
+                                    'assets/images/icon1.png',
+                                    fit: BoxFit.fill
                                   ),
+                                  // child: Image.network(
+                                  //   'https://t1.thpservices.com/previewimage/gallil/f3b8fe2d72c92e4e468cefb96e0a9c57/esy-057855656.jpg',
+                                  //   fit: BoxFit.fill,
+                                  // ),
                                 ),
                                 const SelectionArea(
                                     child: Text(
@@ -921,10 +928,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://i.ytimg.com/vi/zi4thNp15qg/hqdefault.jpg',
-                                      fit: BoxFit.fill,
+                                    child: Image.asset(
+                                        'assets/images/icon2.png',
+                                        fit: BoxFit.fill
                                     ),
+                                    // child: Image.network(
+                                    //   'https://i.ytimg.com/vi/zi4thNp15qg/hqdefault.jpg',
+                                    //   fit: BoxFit.fill,
+                                    // ),
                                   ),
                                   const SelectionArea(
                                       child: Text(
@@ -972,7 +983,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         child: Stack(
                           children: [
                             Align(
-                              alignment: AlignmentDirectional(0, 0),
+                              alignment: const AlignmentDirectional(0, 0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
@@ -983,10 +994,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://img.freepik.com/premium-vector/cartoon-girl-anime-style-sports-uniform-shorts-tshirt-vector-art-toddler-character_456865-1280.jpg?w=2000',
-                                      fit: BoxFit.fill,
+                                    child: Image.asset(
+                                        'assets/images/icon3.png',
+                                        fit: BoxFit.fill
                                     ),
+                                    // child: Image.network(
+                                    //   'https://img.freepik.com/premium-vector/cartoon-girl-anime-style-sports-uniform-shorts-tshirt-vector-art-toddler-character_456865-1280.jpg?w=2000',
+                                    //   fit: BoxFit.fill,
+                                    // ),
                                   ),
                                   const SelectionArea(
                                       child: Text(
@@ -1045,9 +1060,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAOZIC6mWlKV_Z6cGPOITSjK4tKVNtDmlKXA&usqp=CAU',
-                                      fit: BoxFit.fill,
+
+                                    child: Image.asset(
+                                        'assets/images/icon4.png',
+                                        fit: BoxFit.fill
                                     ),
                                   ),
                                   const SelectionArea(
@@ -1123,9 +1139,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Image.network(
-                                        'https://images.saymedia-content.com/.image/t_share/MTc0MTY5OTE0NTYxODAwMDYw/how-to-draw-a-cartoon-eye.jpg',
-                                        fit: BoxFit.fill,
+
+                                      child: Image.asset(
+                                          'assets/images/icon5.png',
+                                          fit: BoxFit.fill
                                       ),
                                     ),
                                     const SelectionArea(
@@ -1184,9 +1201,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                         ),
-                                        child: Image.network(
-                                          'https://media.istockphoto.com/id/1125874619/vector/human-heart-with-arteries-and-valves-vector-cartoon-illustration-of-anatomy-internal-organ.jpg?s=612x612&w=0&k=20&c=z0o-Vr-_gq_MBSwvMdgal8zZBo7GmNf6htrZ-BBnx8M=',
-                                          fit: BoxFit.fill,
+
+                                        child: Image.asset(
+                                            'assets/images/icon6.png',
+                                            fit: BoxFit.fill
                                         ),
                                       ),
                                       const SelectionArea(
@@ -1246,9 +1264,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                         ),
-                                        child: Image.network(
-                                          'https://image.shutterstock.com/image-vector/young-teenager-woman-suffering-migraine-260nw-1490258219.jpg',
-                                          fit: BoxFit.fill,
+
+                                        child: Image.asset(
+                                            'assets/images/icon7.png',
+                                            fit: BoxFit.fill
                                         ),
                                       ),
                                       const SelectionArea(
@@ -1308,9 +1327,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                         ),
-                                        child: Image.network(
-                                          'https://us.123rf.com/450wm/jemastock/jemastock2004/jemastock200409457/144571156-man-sick-with-chest-pain-covid19-symptom-vector-illustration-design.jpg?ver=6',
-                                          fit: BoxFit.fill,
+
+                                        child: Image.asset(
+                                            'assets/images/icon8.png',
+                                            fit: BoxFit.fill
                                         ),
                                       ),
                                       const SelectionArea(
@@ -1376,6 +1396,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ),
                         onPressed: () {
                           print('viwe symp');
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const Symptoms()));
                         },
                       ),
                     ),
