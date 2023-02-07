@@ -159,22 +159,13 @@ class _LoginFirstState extends State<LoginFirst> {
                       );
                       return;
                     }
-                    // print(str);
-                    await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: '+91$str',
-                      verificationCompleted: (PhoneAuthCredential credential) {},
-                      verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        LoginFirst.verify = verificationId;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context)=> OtpWindow(text: str)
-                            )
-                        );
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context)=> OtpWindow(text: str)
+                        )
                     );
+                    // print(str);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF202871),
@@ -212,6 +203,25 @@ class _OtpWindowState extends State<OtpWindow> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   var ch1 = '', ch2 = '', ch3 = '', ch4 = '', ch5 = '', ch6 = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    () async {
+
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '+91${widget.text}',
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {},
+        codeSent: (String verificationId, int? resendToken) {
+          LoginFirst.verify = verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+      setState(() {});
+    }();
+  }
 
   @override
   Widget build(BuildContext context) {

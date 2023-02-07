@@ -5,7 +5,9 @@ import 'login.dart';
 import 'BookAppointment.dart';
 import 'profile.dart';
 import 'Symptoms.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class HomePageWidget extends StatefulWidget {
   final String number;
@@ -19,13 +21,69 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   TextEditingController? textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String name = "", city = "", state = "", profilepic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
+  String name = "", city= "", state = "", profilepic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
   String email = "";
+  String ?place;
+  String temp = "Place";
+  bool set = false;
   int age = 0;
+
+  void _determinePosition() async {
+    if(set) {
+      Fluttertoast.showToast(
+          msg: "Location already set.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.lightGreenAccent,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      return;
+    }
+    var serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if(!serviceEnabled) {
+      Fluttertoast.showToast(
+          msg: "Location is disabled.", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 5, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0
+      );
+      return;
+    }
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Fluttertoast.showToast(
+            msg: "Permission denied.", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 5, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0
+        );
+        return;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      Fluttertoast.showToast(
+          msg: "Permission denied forever, enable from settings.", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 5, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0
+      );
+      return;
+    }
+    var curLocation = await Geolocator.getCurrentPosition();
+    List<Placemark> pl  = await placemarkFromCoordinates(curLocation.latitude, curLocation.longitude);
+    Placemark placeMark  = pl[0];
+    if(placeMark.locality!=null) {
+      temp = "${placeMark.subLocality},${placeMark.locality},${placeMark.administrativeArea}";
+      place = temp;
+      set = true;
+      setState(() {});
+    }
+    else {
+      Fluttertoast.showToast(
+          msg: "Error setting location, please try again.", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 5, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0
+      );
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    place = temp;
     textController = TextEditingController();
     () async {
       final query = await FirebaseFirestore.instance
@@ -205,8 +263,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 print('icon pressed');
+                _determinePosition();
               },
               style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),
@@ -217,13 +276,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 color: Colors.white,
                 size: 30,),
             ),
-            const Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
               child: SelectionArea(
                   child: Text(
-                    'Place, Dehradun',
+                    '$place',
                     style:
-                    TextStyle(
+                    const TextStyle(
                       color: Color(0xFFF3F5F6),
                       fontFamily: 'Poppins',
                     ),
@@ -414,20 +473,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       color: Color(0xFFF8F2F2),
                                       size: 30,
                                     )
-                                  // child: FlutterFlowIconButton(
-                                  //   borderColor: Color(0xFFF8F2F2),
-                                  //   borderRadius: 90,
-                                  //   borderWidth: 1,
-                                  //   buttonSize: 60,
-                                  //   icon: Icon(
-                                  //     Icons.add,
-                                  //     color: Color(0xFFF8F2F2),
-                                  //     size: 30,
-                                  //   ),
-                                  //   onPressed: () {
-                                  //     print('IconButton pressed ...');
-                                  //   },
-                                  // ),
                                 ),
                               ],
                             ),

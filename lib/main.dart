@@ -20,5 +20,4 @@ void main() async {
   } else {
     runApp(MaterialApp(home: HomePageWidget(number: number)));
   }
-  // runApp(const MaterialApp(home: Symptoms()));
 }

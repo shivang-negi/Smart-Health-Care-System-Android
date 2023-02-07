@@ -157,7 +157,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             shape: BoxShape.circle,
                           ),
                           // child: Image(image: );
-                          child: media==''?Image.asset('assets/default.jpg'):Image.file(File(media)),
+                          child: media==''?Image.asset('assets/images/default.png'):Image.file(File(media)),
                         ),
                       ),
                     ),

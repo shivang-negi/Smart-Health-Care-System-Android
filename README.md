@@ -11,3 +11,5 @@ Update 4:
   
 Added Symptoms page  
 Replaced Network images with asset images  
+Added Geolocation  
+Updated OTP Authentication

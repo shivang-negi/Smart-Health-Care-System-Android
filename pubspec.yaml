@@ -23,6 +23,8 @@ dependencies:
   cached_network_image: ^3.2.3
   firebase_storage: ^11.0.10
   file_picker: ^5.2.5
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -32,7 +34,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/default.jpg
+    - assets/images/default.png
     - assets/images/1.jpg
     - assets/images/2.jpg
     - assets/images/3.jpg
