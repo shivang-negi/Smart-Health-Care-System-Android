@@ -5,6 +5,7 @@ import 'login.dart';
 import 'BookAppointment.dart';
 import 'profile.dart';
 import 'Symptoms.dart';
+import 'Doctor/physician.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -24,7 +25,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   String name = "", city= "", state = "", profilepic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
   String email = "";
   String ?place;
-  String temp = "Place";
+  String temp = "";
   bool set = false;
   int age = 0;
 
@@ -1135,6 +1136,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 child: const Text(''),
                                 onPressed: () {
                                   print('button 4 works');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const PhysicianWidget()));
                                 },
                               ),
                             ),

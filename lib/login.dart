@@ -405,11 +405,17 @@ class _OtpWindowState extends State<OtpWindow> {
 
                   final query = await FirebaseFirestore.instance
                       .collection('Users')
-                      .limit(10)
+                      .limit(1)
                       .where('Phone Number', isEqualTo: widget.text)
                       .get();
 
-                  if(query.docs.isEmpty) {
+                  // final query2 = await FirebaseFirestore.instance
+                  //     .collection('Doctor')
+                  //     .limit(1)
+                  //     .where('number', isEqualTo: widget.text)
+                  //     .get();
+
+                  if(query.docs.isEmpty /*&& query2.docs.isEmpty*/) {
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context)=> RegisterWidget(number: widget.text)
                     ));

@@ -9,7 +9,9 @@ Added profile page
 
 Update 4:  
   
-Added Symptoms page  
+Added Symptoms page, Splash Screen
 Replaced Network images with asset images  
 Added Geolocation  
-Updated OTP Authentication
+Updated OTP Authentication  
+  
+Update 5:  
