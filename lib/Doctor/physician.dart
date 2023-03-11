@@ -1,8 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
+import 'package:sqflite/sqflite.dart';
+import 'appointments.dart';
 
 class PhysicianWidget extends StatefulWidget {
-  const PhysicianWidget({Key? key}) : super(key: key);
+  final String number;
+  PhysicianWidget({Key? key, required this.number}) : super(key: key);
 
   @override
   _PhysicianWidgetState createState() => _PhysicianWidgetState();
@@ -16,6 +21,7 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
   List<String> years = [];
   List<String> pic = [];
   List<String> number = [];
+  late String path;
 
   @override
   void initState() {
@@ -25,13 +31,6 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
           .collection('Doctor')
           .limit(5)
           .get();
-      if(query.docs.isEmpty) {
-        print("emtpy");
-        return;
-      }
-      else {
-        print("${query.docs.length} ");
-      }
       for(int i=0;i<query.size;i++) {
         name.add(query.docs[i]['Name']);
         years.add(query.docs[i]['years']);
@@ -39,6 +38,10 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
         pic.add(query.docs[i]['picture']);
       }
       setState(() {});
+    }();
+    () async {
+      var directory = await getApplicationDocumentsDirectory();
+      path = '${directory.path}/chat_db.db';
     }();
   }
 
@@ -111,9 +114,11 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
-                      child: Image.network(
-                        pic[index],
-                        fit: BoxFit.contain,
+                      child: CachedNetworkImage(
+                        imageUrl: pic[index],
+                        progressIndicatorBuilder: (context, url, downloadProgress) =>
+                            CircularProgressIndicator(value: downloadProgress.progress),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                       ),
                     ),
                     title: Text(name[index],
@@ -137,7 +142,29 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
                         ),
                       ),
                       onPressed: () {
-                        print('button $index pressed');
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              title: Text("Consult with doctor ${name[index]}"),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(context), child: const Text("No")),
+                                TextButton(onPressed: () {
+                                  () async {
+                                    Database db = await openDatabase(path,version: 1, onCreate: (db,version) async {
+                                      await db.execute("CREATE TABLE chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
+                                    });
+                                    var result = await db.query('chat',where: 'id = ${number[index]}');
+                                    if(result.isEmpty) {
+                                      await db.execute('INSERT INTO chat VALUES(${number[index]},"${name[index]}")');
+                                    }
+                                  }();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatHomePage(number: widget.number)));
+                                }, child: const Text("Yes"))
+                              ],
+                            );
+                          }
+                        );
                       },
                     ),
                   );

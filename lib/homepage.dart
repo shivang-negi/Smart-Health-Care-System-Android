@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import 'BookAppointment.dart';
 import 'profile.dart';
 import 'Symptoms.dart';
 import 'Doctor/physician.dart';
+import 'Doctor/appointments.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -133,9 +135,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: Image.network(
-                      profilepic,
-                      fit: BoxFit.contain,
+                    child: CachedNetworkImage(
+                      imageUrl: profilepic,
+                      progressIndicatorBuilder: (context, url, downloadProgress) =>
+                          CircularProgressIndicator(value: downloadProgress.progress),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     ),
                   ),
                   Text(
@@ -186,7 +190,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       backgroundColor: const Color(0xFFFFFFFF),
                       minimumSize: const Size.fromHeight(40),
                     ),
-                    onPressed: (){print("your Appointments");},
+                    onPressed: (){
+                      print('Appointments page');
+                      Navigator.push(context,MaterialPageRoute(builder: (context) => ChatHomePage(number: widget.number)));
+                    },
                     child: const Text("Appointments",
                         style: TextStyle(
                             color: Color(0xFF000000),
@@ -555,7 +562,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context)=> const Appointment()),
+                              MaterialPageRoute(builder: (context)=> Appointment(number: widget.number)),
                             );
                             print('works1???');
                           },
@@ -653,7 +660,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             ),
                             child: const Text(''),
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const Symptoms()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> Symptoms(number: widget.number)));
                             },
                           ),
                         ),
@@ -1136,7 +1143,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 child: const Text(''),
                                 onPressed: () {
                                   print('button 4 works');
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const PhysicianWidget()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                 },
                               ),
                             ),
@@ -1443,7 +1450,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ),
                         onPressed: () {
                           print('viwe symp');
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const Symptoms()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Symptoms(number: widget.number)));
                         },
                       ),
                     ),

@@ -28,6 +28,14 @@ dependencies:
   permission_handler: ^10.2.0
   get: ^4.6.5
   flutter_native_splash: ^2.2.17
+  socket_io_client: ^2.0.1
+  flutter_chat_ui: ^1.6.6
+  image_picker: ^0.8.6+4
+  open_filex: ^4.3.2
+  mime: ^1.0.4
+  sqflite: ^2.2.5
+  chat_bubbles: ^1.4.0
+  path_provider: ^2.0.13
 
 flutter_native_splash:
   color: "#ffffff"

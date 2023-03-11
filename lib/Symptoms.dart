@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Symptoms extends StatefulWidget {
-  const Symptoms({Key? key}) : super(key: key);
+  final String number;
+  Symptoms({Key? key, required this.number}) : super(key: key);
 
   @override
   State<Symptoms> createState() => _SymptomsState();

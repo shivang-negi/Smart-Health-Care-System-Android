@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Appointment extends StatefulWidget {
-  const Appointment({Key? key}) : super(key: key);
+  final String number;
+  Appointment({Key? key, required this.number}) : super(key: key);
 
   @override
   _Appointment createState() => _Appointment();
