@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
@@ -13,13 +13,16 @@ import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'SocketManager.dart';
 
 class ChatUI extends StatefulWidget {
-  final String name,number;
+  final String user,receiver,receiver_name,path;
   const ChatUI({Key ?key,
-    required this.name,
-    required this.number
+    required this.user,
+    required this.receiver,
+    required this.receiver_name,
+    required this.path
   }): super(key:key);
 
   @override
@@ -28,64 +31,137 @@ class ChatUI extends StatefulWidget {
 
 class _ChatPageState extends State<ChatUI> {
   List<types.Message> _messages = [];
-  var _user;
   late IO.Socket _socket;
-  final String hosturl = "https://c375-103-248-123-92.in.ngrok.io";
+  late String room;
+  late Database database;
 
-  receiveText(data) {
+  Receive(data) {
     print(data);
-    var _sender  = types.User(id: data['sender']);
-    if(_sender==_user) return;
     final textMessage = types.TextMessage(
-      author: _sender,
+      author: types.User(id: widget.receiver),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
-      text: data['message'],
+      text: data['msg'],
     );
+    database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${data['msg']}','${widget.receiver}','text')");
     _addMessage(textMessage);
   }
 
-  // Uint8List dataFromBase64String(String base64String) {
-  //   return base64Decode(base64String);
-  // }
-  //
-  // receiveImage(data) async {
-  //   print(data['message'].length);
-  //   var _sender  = types.User(id: data['sender']);
-  //   final bytes = dataFromBase64String(data['message']);
-  //   final image = await decodeImageFromList(bytes);
-  //
-  //   final message = types.ImageMessage(
-  //     author: _sender,
-  //     createdAt: DateTime.now().millisecondsSinceEpoch,
-  //     height: image.height.toDouble(),
-  //     id: const Uuid().v4(),
-  //     name: 'abc',
-  //     size: bytes.length,
-  //     uri: '/',
-  //     width: image.width.toDouble(),
-  //   );
-  //   _addMessage(message);
-  // }
+  ReceiveImage(data) async {
+    print(data);
+    final response = await http.get(Uri.parse(data['url']));
+    final documentDirectory = await getApplicationDocumentsDirectory();
+    final file = File("${documentDirectory.path}/${DateTime.now().toIso8601String()}.png");
+    file.writeAsBytesSync(response.bodyBytes);
+
+    print(file.path);
+    final bytes = await file.readAsBytes();
+    final image = await decodeImageFromList(bytes);
+
+    final message = types.ImageMessage(
+      author: types.User(id: widget.receiver),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      height: image.height.toDouble(),
+      id: const Uuid().v4(),
+      name: DateTime.now().toIso8601String(),
+      size: bytes.length,
+      uri: file.path,
+      width: image.width.toDouble(),
+    );
+
+    _addMessage(message);
+    database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${file.path}','${widget.receiver}','image')");
+  }
+
+  static var httpClient = new HttpClient();
+  Future<File> _downloadFile(String url, String filename) async {
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
+  }
+
+  ReceiveFile(data) async {
+    String filename = data['filename'];
+    File file = await _downloadFile(data['url'],filename);
+    int bytes = await file.length();
+    // print(data);
+    // print(file.path);
+    // print(bytes);
+    final message = types.FileMessage(
+      author: types.User(id: widget.receiver),
+      createdAt: DateTime
+          .now()
+          .millisecondsSinceEpoch,
+      id: const Uuid().v4(),
+      mimeType: lookupMimeType(file.path),
+      name: filename,
+      size: bytes,
+      uri: file.path,
+    );
+
+    _addMessage(message);
+    database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${file.path}','${widget.receiver}','file')");
+  }
+
+  addNew(data) async {
+    for(var i=0;i<data.length;i++) {
+      if(data[i]['type']=='text') {
+        await Receive(data[i]);
+      } else if(data[i]['type']=='image') {
+        await ReceiveImage(data[i]);
+      }
+      else if(data[i]['type']=='file') {
+        await ReceiveFile(data[i]);
+      }
+    }
+  }
 
   _connect() {
     _socket.onConnect((data) => print("Connection established"));
-    _socket.onConnectError((data) => print('Error: $data'));
+    _socket.onConnectError((data) => (data) {
+      Fluttertoast.showToast(
+          msg: "Error connecting to server",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    });
     _socket.onDisconnect((data) => print("Disconnected"));
-    _socket.on('messageText',(data)=> receiveText(data));
-    // _socket.on('messageImage',(data)=> receiveImage(data));
+    _socket.emit('join',{'room': room,'user':widget.user, 'receiver':widget.receiver});
+    _socket.on('oldmsgs',(data)=>addNew(data));
+    _socket.on('new_msg',(data)=>Receive(data));
+    _socket.on('receiveImage',(data)=>ReceiveImage(data));
+    _socket.on('receiveFile',(data)=>ReceiveFile(data));
   }
 
   @override
   void initState() {
-    _user  = types.User(id: widget.number);
-    _socket = IO.io(hosturl,IO.OptionBuilder().
-    setTransports(['websocket']).
-    setQuery({'username': widget.number}).
-    build());
+    if(int.parse(widget.user) < int.parse(widget.receiver)) {
+      room = "${widget.user} ${widget.receiver}";
+    } else {
+      room = "${widget.receiver} ${widget.user}";
+    }
+    print(room);
+    _socket = SocketManager.getSocket();
+
+    _loadMessages();
     _connect();
     super.initState();
-    _loadMessages();
+  }
+
+  @override
+  void dispose() {
+    // _socket.disconnect();
+    // _socket.close();
+    SocketManager.dispose();
+    super.dispose();
   }
 
   @override
@@ -106,9 +182,9 @@ class _ChatPageState extends State<ChatUI> {
           color: Colors.white,
           size: 30,),
       ),
-      title: const Text(
-        'Chat',
-        style: TextStyle(
+      title: Text(
+        widget.receiver_name,
+        style: const TextStyle(
             fontFamily: 'Lexend',
             color: Colors.white,
             fontSize: 22,
@@ -125,16 +201,13 @@ class _ChatPageState extends State<ChatUI> {
       onMessageTap: _handleMessageTap,
       onPreviewDataFetched: _handlePreviewDataFetched,
       onSendPressed: _handleSendPressed,
-      user: _user,
+      user: types.User(id: widget.user),
     ),
   );
-
   void _addMessage(types.Message message) {
-    if (mounted) {
-      setState(() {
-        _messages.insert(0, message);
-      });
-    }
+    setState(() {
+      _messages.insert(0, message);
+    });
   }
 
   void _handleAttachmentPressed() {
@@ -180,6 +253,8 @@ class _ChatPageState extends State<ChatUI> {
     );
   }
 
+
+  //=====================FILE======================
   void _handleFileSelection() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.any,
@@ -187,7 +262,7 @@ class _ChatPageState extends State<ChatUI> {
 
     if (result != null && result.files.single.path != null) {
       final message = types.FileMessage(
-        author: _user,
+        author: types.User(id: widget.user),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
         mimeType: lookupMimeType(result.files.single.path!),
@@ -197,9 +272,41 @@ class _ChatPageState extends State<ChatUI> {
       );
 
       _addMessage(message);
+      database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${result.files.single.path}','${widget.user}','file')");
+
+      String FileUrl = "";
+      File file = File(result.files.single.path!);
+      Reference refer = FirebaseStorage.instance.ref();
+      Reference ref_dir = refer.child('files');
+
+      Reference upload = ref_dir.child(const Uuid().v4());
+      try {
+        await upload.putFile(file);
+        FileUrl = await upload.getDownloadURL();
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: "Error sending file, try again",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        return;
+      }
+      print(FileUrl);
+      _socket.emit('fileMessage',{
+        'url': FileUrl,
+        'room': room,
+        'sender': widget.user,
+        'receiver': widget.receiver,
+        'filename': result.files.single.name
+      });
     }
   }
 
+
+  //====================IMAGE=====================
   void _handleImageSelection() async {
     final result = await ImagePicker().pickImage(
       imageQuality: 70,
@@ -210,13 +317,9 @@ class _ChatPageState extends State<ChatUI> {
     if (result != null) {
       final bytes = await result.readAsBytes();
       final image = await decodeImageFromList(bytes);
-      final imageString = base64Encode(bytes);
-
-      String str = result.path;
-      print(str);
 
       final message = types.ImageMessage(
-        author: _user,
+        author: types.User(id: widget.user),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         height: image.height.toDouble(),
         id: const Uuid().v4(),
@@ -225,14 +328,43 @@ class _ChatPageState extends State<ChatUI> {
         uri: result.path,
         width: image.width.toDouble(),
       );
-      _socket.emit('messageImage',{
-        'message': imageString,
-        'sender': _user
-      });
+
       _addMessage(message);
+      database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${result.path}','${widget.user}','image')");
+
+      // Saving image in firebase storage and send it to receiver
+      String imageUrl = "";
+      File file = File(result.path);
+      Reference refer = FirebaseStorage.instance.ref();
+      Reference ref_dir = refer.child('images');
+
+      Reference upload = ref_dir.child(const Uuid().v4());
+      try {
+        await upload.putFile(file);
+        imageUrl = await upload.getDownloadURL();
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: "Error sending image, try again",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        return;
+      }
+      print(imageUrl);
+      _socket.emit('imageMessage',{
+        'url': imageUrl,
+        'room': room,
+        'sender': widget.user,
+        'receiver': widget.receiver
+      });
     }
   }
 
+
+  //=====================TEXT============================
   void _handleMessageTap(BuildContext _, types.Message message) async {
     if (message is types.FileMessage) {
       var localPath = message.uri;
@@ -273,12 +405,13 @@ class _ChatPageState extends State<ChatUI> {
           });
         }
       }
-
       await OpenFilex.open(localPath);
     }
   }
 
-  void _handlePreviewDataFetched(types.TextMessage message, types.PreviewData previewData,
+  void _handlePreviewDataFetched(
+      types.TextMessage message,
+      types.PreviewData previewData,
       ) {
     final index = _messages.indexWhere((element) => element.id == message.id);
     final updatedMessage = (_messages[index] as types.TextMessage).copyWith(
@@ -291,27 +424,90 @@ class _ChatPageState extends State<ChatUI> {
   }
 
   void _handleSendPressed(types.PartialText message) {
+
     final textMessage = types.TextMessage(
-      author: _user,
+      author: types.User(id: widget.user),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
       text: message.text,
     );
-    _socket.emit('messageText',{
-      'message': message.text,
-      'sender': _user
+    _socket.emit('message',{
+      'msg': message.text,
+      'room': room,
+      'sender': widget.user,
+      'receiver': widget.receiver
     });
+    database.execute("INSERT INTO room${widget.receiver} VALUES(${DateTime.now().millisecondsSinceEpoch},'${message.text}','${widget.user}','text')");
     _addMessage(textMessage);
   }
 
   void _loadMessages() async {
-    final response = await rootBundle.loadString('assets/messages.json');
-    final messages = (jsonDecode(response) as List)
-        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-        .toList();
+    database = await initdb();
+    await database.execute("CREATE TABLE IF NOT EXISTS room${widget
+        .receiver}(id INTEGER PRIMARY KEY, message TEXT NOT NULL, sender TEXT NOT NULL, type TEXT NOT NULL)");
+    var result = await database.query('room${widget.receiver}');
+    for (int i = 0; i < result.length; i++) {
+      var mp = result[i];
+      var id = mp['id'] as int;
+      var send = mp['sender'].toString();
+      var msg = mp['message'].toString();
+      var type = mp['type'].toString();
+      if (type == 'text') {
+        final textMessage = types.TextMessage(
+          author: types.User(id: send),
+          createdAt: id,
+          id: const Uuid().v4(),
+          text: msg,
+        );
+        setState(() {
+          _messages.insert(0, textMessage);
+        });
+      }
+      else if (type == 'image') {
+        final result = await XFile(msg);
 
-    setState(() {
-      _messages = messages;
+        final bytes = await result.readAsBytes();
+        final image = await decodeImageFromList(bytes);
+
+        final message = types.ImageMessage(
+          author: types.User(id: send),
+          createdAt: DateTime
+              .now()
+              .millisecondsSinceEpoch,
+          height: image.height.toDouble(),
+          id: const Uuid().v4(),
+          name: result.name,
+          size: bytes.length,
+          uri: result.path,
+          width: image.width.toDouble(),
+        );
+
+        _addMessage(message);
+      }
+      else if(type == 'file') {
+        File file = File(msg);
+        int bytes = await file.length();
+        final message = types.FileMessage(
+          author: types.User(id: send),
+          createdAt: DateTime
+              .now()
+              .millisecondsSinceEpoch,
+          id: const Uuid().v4(),
+          mimeType: lookupMimeType(file.path),
+          name: File(msg).uri.pathSegments.last,
+          size: bytes,
+          uri: file.path,
+        );
+
+        _addMessage(message);
+      }
+    }
+  }
+
+  initdb() async{
+    var db = await openDatabase(widget.path, version: 1, onCreate: (db,version) async {
+      await db.execute("CREATE TABLE room${widget.receiver}(id INTEGER PRIMARY KEY, message TEXT NOT NULL, sender TEXT NOT NULL)");
     });
+    return db;
   }
 }

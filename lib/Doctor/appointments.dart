@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'Chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
 import 'package:sqflite/sqflite.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'dart:async';
+import 'SocketManager.dart';
 
 class ChatHomePage extends StatefulWidget {
   final String number;
@@ -22,35 +25,102 @@ class _ChatHomePageState extends State<ChatHomePage> {
   List<dynamic> name = [];
   List<dynamic> number = [];
   List<dynamic> image = [];
-  late final value;
+  var value = -1;
+  late IO.Socket _socket;
+  late Timer _timer;
+  late Database db;
+  var result;
+
+  checkNewMessages() {
+    _socket.emit('check_messages',{'user': widget.number});
+  }
+
+  addNewMessages(data) async {
+
+    for(int i=0;i<data.length;i++) {
+      var num = data[i]['sender'];
+      bool flag = false;
+      for(var i=0;i<result.length;i++) {
+        if(num==result[i]['id']) {
+          flag = true;
+          break;
+        }
+      }
+      if(flag) continue;
+      final query = await FirebaseFirestore.instance
+          .collection('Users')
+          .limit(1)
+          .where('Phone Number', isEqualTo: num)
+          .get();
+
+      var _name = query.docs[0]['Name'];
+      var _profilepic = 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg';
+      if(query.docs[0]['Profile']!='') {
+        _profilepic = query.docs[0]['Profile'];
+      }
+
+      name.add(_name);
+      image.add(_profilepic);
+      number.add(num);
+
+      db.execute('INSERT INTO chat VALUES($num,"$_name")');
+    }
+    setState(() {
+      value = number.length;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _user = widget.number;
-    print(_user);
+    _socket = SocketManager.getSocket();
+    _timer = Timer.periodic(const Duration(seconds: 3), (_)=>checkNewMessages());
+    _socket.on('AddNewMessages', (data) => addNewMessages(data));
+
     () async {
-      final query = await FirebaseFirestore.instance
-          .collection('Doctor')
-          .limit(5)
-          .get();
-      var directory = await getApplicationDocumentsDirectory();
-      path = '${directory.path}/chat_db.db';
-      Database db = await openDatabase(path);
-      var result = await db.query('chat');
-      for(int i=0;i<result.length;i++) {
-        number.add(result[i]['id']);
-        name.add(result[i]['name']);
-        for(int j=0;j<query.size;j++) {
-          var num = (query.docs[j]['number']);
-          var num2 = '${result[i]['id']}';
-          if(num == num2) {
-            image.add(query.docs[j]['picture']);
-            break;
+      try {
+        final query = await FirebaseFirestore.instance
+            .collection('Doctor')
+            .get();
+
+        var directory = await getApplicationDocumentsDirectory();
+        path = '${directory.path}/chat_db.db';
+        db = await openDatabase(path);
+        result = await db.query('chat');
+        for (int i = 0; i < result.length; i++) {
+          number.add(result[i]['id']);
+          name.add(result[i]['name']);
+
+          // var last_msg = await db.rawQuery('SELECT * FROM table ORDER BY column DESC LIMIT 1;');
+          // print(last_msg);
+
+          for (int j = 0; j < query.size; j++) {
+            var num = (query.docs[j]['number']);
+            var num2 = '${result[i]['id']}';
+            if (num == num2) {
+              image.add(query.docs[j]['picture']);
+              break;
+            }
           }
-          fetched = true;
+          if(image.length<number.length) {
+            var profile = ('https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg');
+            final query = await FirebaseFirestore.instance
+                .collection('Users')
+                .limit(1)
+                .where('Phone Number', isEqualTo: result[i]['id'].toString())
+                .get();
+
+            if(query.size>0 && query.docs[0]['Profile']!='') {
+              profile = query.docs[0]['Profile'];
+              print(profile);
+            }
+            image.add(profile);
+          }
         }
-        if(result.isEmpty) fetched = true;
+      }
+      catch(e) {
+        value = 0;
       }
       setState(() {
         value = number.length;
@@ -60,20 +130,23 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
   _getSize() {
     setState(() {});
-    if(number.isNotEmpty) return true;
+    if(value==-1) return true;
     return false;
-  }
-
-  getFromServer() {
-    setState(() {
-    });
-    return fetched;
   }
 
   @override
   void dispose() {
     _unfocusNode.dispose();
+    SocketManager.dispose();
+    print('cancel');
+    _timer.cancel();
     super.dispose();
+  }
+
+  String getText(number,name) {
+    String str = "Start your consultation with $name!";
+
+    return str;
   }
 
   @override
@@ -109,8 +182,9 @@ class _ChatHomePageState extends State<ChatHomePage> {
         centerTitle: false,
         elevation: 0,
       ),
-      body: (getFromServer()==false)?const Center(child:CircularProgressIndicator()):
-      (_getSize())? ListView.builder(
+      body:
+      (_getSize()==true)?const Center(child:CircularProgressIndicator()):
+      (value>0)? ListView.builder(
               itemCount: number.length,
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -145,7 +219,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
                           ),
                         ),
                         subtitle: Text(
-                          'Start your consultation with ${name[index]}!',
+                          getText(number[index], name[index]),
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                           ),
@@ -161,7 +235,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
                           ),
                           child: const Text(''),
                           onPressed: () {
-                            print("pressed");
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=> ChatUI(
+                                user: _user,
+                                receiver: number[index].toString(),
+                              receiver_name: name[index],
+                              path: path
+                            )));
                           },
                         ),
                       ),

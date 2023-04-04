@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
 import 'package:sqflite/sqflite.dart';
+import 'SocketManager.dart';
 import 'appointments.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class PhysicianWidget extends StatefulWidget {
   final String number;
@@ -22,10 +24,17 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
   List<String> pic = [];
   List<String> number = [];
   late String path;
+  late IO.Socket _socket;
+
+  handleMessageRequest(data) {
+    print(data);
+  }
 
   @override
   void initState() {
     super.initState();
+    _socket = SocketManager.getSocket();
+    _socket.on('newMessageRequest',(data)=>handleMessageRequest(data));
     () async {
       final query = await FirebaseFirestore.instance
           .collection('Doctor')
@@ -42,13 +51,23 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
     () async {
       var directory = await getApplicationDocumentsDirectory();
       path = '${directory.path}/chat_db.db';
+      Database db = await initdb();
+      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
     }();
   }
 
   @override
   void dispose() {
     _unfocusNode.dispose();
+    SocketManager.dispose();
     super.dispose();
+  }
+
+  initdb() async{
+    var db = await openDatabase(path, version: 1, onCreate: (db,version) async {
+      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
+    });
+    return db;
   }
 
   @override
@@ -151,15 +170,19 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
                                 TextButton(onPressed: () => Navigator.pop(context), child: const Text("No")),
                                 TextButton(onPressed: () {
                                   () async {
-                                    Database db = await openDatabase(path,version: 1, onCreate: (db,version) async {
-                                      await db.execute("CREATE TABLE chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
-                                    });
+                                    Database db = await initdb();
                                     var result = await db.query('chat',where: 'id = ${number[index]}');
                                     if(result.isEmpty) {
                                       await db.execute('INSERT INTO chat VALUES(${number[index]},"${name[index]}")');
                                     }
+                                    _socket.emit('message_request',{
+                                      'receiver': number[index],
+                                      'sender'  : widget.number
+                                    });
                                   }();
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatHomePage(number: widget.number)));
+                                  Future.delayed(const Duration(seconds: 1)).then((value) => {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatHomePage(number: widget.number)))
+                                  });
                                 }, child: const Text("Yes"))
                               ],
                             );

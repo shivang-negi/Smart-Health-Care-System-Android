@@ -11,6 +11,7 @@ import 'Doctor/appointments.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomePageWidget extends StatefulWidget {
   final String number;
@@ -83,12 +84,49 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     }
   }
 
+  late FirebaseMessaging messaging;
   @override
   void initState() {
     super.initState();
+
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   var provider = context.read<SocketProvider>();
+    //   provider.init("https://e455-2409-4053-2d94-7396-d856-9ae3-662a-650e.in.ngrok.io");
+    //   IO.Socket socket = provider.getSocket;
+    //   print(socket);
+    // });
+
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value){
+      // print(value);
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Notification"),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
     place = temp;
     textController = TextEditingController();
     () async {
+
       final query = await FirebaseFirestore.instance
           .collection('Users')
           .limit(1)
@@ -949,6 +987,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               child: const Text(''),
                               onPressed: () {
                                 print('button 1 works');
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                               },
                             ),
                           ),
@@ -1014,6 +1053,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 child: const Text(''),
                                 onPressed: () {
                                   print('button 2 works');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                 },
                               ),
                             ),
@@ -1080,6 +1120,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 child: const Text(''),
                                 onPressed: () {
                                   print('button 3 works');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                 },
                               ),
                             ),
@@ -1223,6 +1264,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   child: const Text(''),
                                   onPressed: () {
                                     print('button 5 works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1285,6 +1327,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     child: const Text(''),
                                     onPressed: () {
                                       print('button 6 works');
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                     },
                                   ),
                                 ),
@@ -1348,6 +1391,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     child: const Text(''),
                                     onPressed: () {
                                       print('button 7 works');
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                     },
                                   ),
                                 ),
@@ -1411,6 +1455,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     child: const Text(''),
                                     onPressed: () {
                                       print('button 8 works');
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                     },
                                   ),
                                 ),
@@ -1489,7 +1534,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         )),
                     SelectionArea(
                         child: Text(
-                            'Shivang Negi\nShivam Rana\nPriyanshu Goyal\nRahul Negi',
+                            'Shivang Negi\nRahul Negi',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 18,
@@ -1499,7 +1544,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   ],
                 ),
               ),
-
             ],
           ),
         ),

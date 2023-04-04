@@ -397,7 +397,6 @@ class _OtpWindowState extends State<OtpWindow> {
             child: ElevatedButton(
               onPressed: () async {
                 final String code = ch1 + ch2 + ch3 + ch4 + ch5 + ch6;
-                // print(code);LoginFirst.verify    112345
                 try {
                   PhoneAuthCredential credential = PhoneAuthProvider.credential(
                       verificationId: LoginFirst.verify, smsCode: code);

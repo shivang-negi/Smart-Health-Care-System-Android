@@ -14,4 +14,8 @@ Replaced Network images with asset images
 Setup User Database and Server  
 Updated OTP Authentication  
   
-Update 5:  
+Update 5:
+  
+Setup Server Side Database  
+Added Chat Functionality  
+Added Image and File Sharing  

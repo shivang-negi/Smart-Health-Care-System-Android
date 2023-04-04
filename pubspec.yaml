@@ -36,6 +36,10 @@ dependencies:
   sqflite: ^2.2.5
   chat_bubbles: ^1.4.0
   path_provider: ^2.0.13
+  firebase_messaging: ^14.2.6
+  flutter_local_notifications: ^8.2.0
+  provider: ^6.0.5
+  image_gallery_saver: ^1.7.1
 
 flutter_native_splash:
   color: "#ffffff"
@@ -45,10 +49,17 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: "^0.12.0"
+
+flutter_icons:
+  image_path: 'assets/icon.png'
+  ios: true
+  android: true
 
 flutter:
   uses-material-design: true
   assets:
+    - assets/icon.png
     - assets/images/default.png
     - assets/images/health.png
     - assets/images/1.jpg
