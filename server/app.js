@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const server = http.createServer(app);
+const server = http.createServer(app); 
 const { Server } = require("socket.io");
 const { MongoClient } = require('mongodb');
 const { log } = require('console');
@@ -137,11 +137,12 @@ io.sockets.on('connection',function (socket) {
   });
 
   socket.on('check_messages',async function (data) {
-    console.log('=========Check For Messages==========');
+    console.log('=========Check For Messages=========='); 
     console.log(data);
 
     var res = await getData('pending_'+data.user);
     if(res.length>0) {
+      console.log(res); 
       socket.emit('AddNewMessages',res);
       deleteData('pending_'+data.user);
     }
@@ -152,7 +153,7 @@ io.sockets.on('disconnect', function() {
   io.sockets.disconnect();
   io.sockets.close();
 });
-
+ 
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });

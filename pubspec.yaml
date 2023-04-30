@@ -62,12 +62,15 @@ flutter:
     - assets/icon.png
     - assets/images/default.png
     - assets/images/health.png
+    - assets/images/med.png
     - assets/images/1.jpg
     - assets/images/2.jpg
     - assets/images/3.jpg
     - assets/images/doctor.png
     - assets/images/medicine.png
     - assets/images/report.png
+    - assets/images/analysis.png
+    - assets/images/folli.png
     - assets/images/icon1.png
     - assets/images/icon2.png
     - assets/images/icon3.png

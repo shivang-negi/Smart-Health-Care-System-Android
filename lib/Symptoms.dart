@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Doctor/physician.dart';
 
 class Symptoms extends StatefulWidget {
   final String number;
@@ -346,7 +347,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -394,7 +395,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -445,7 +446,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -496,7 +497,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -556,7 +557,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -607,7 +608,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -658,7 +659,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -709,7 +710,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -769,7 +770,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -820,7 +821,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -871,7 +872,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -918,7 +919,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -999,7 +1000,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1046,7 +1047,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1093,7 +1094,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1140,7 +1141,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1196,7 +1197,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1243,7 +1244,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1290,7 +1291,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1336,7 +1337,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1392,7 +1393,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1439,7 +1440,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1486,7 +1487,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1533,7 +1534,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1589,7 +1590,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1636,7 +1637,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1683,7 +1684,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),
@@ -1730,7 +1731,7 @@ class _SymptomsState extends State<Symptoms> {
                                   ),
                                   child: const Text(''),
                                   onPressed: () {
-                                    print('button works');
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PhysicianWidget(number: widget.number)));
                                   },
                                 ),
                               ),

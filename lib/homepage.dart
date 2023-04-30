@@ -1,3 +1,5 @@
+import 'package:app/Medicine.dart';
+import 'package:app/report_prediction.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'orders_and_record.dart';
+import 'SearchPage.dart';
 
 class HomePageWidget extends StatefulWidget {
   final String number;
@@ -96,33 +100,33 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     //   print(socket);
     // });
 
-    messaging = FirebaseMessaging.instance;
-    messaging.getToken().then((value){
-      // print(value);
-    });
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Notification"),
-              content: Text(event.notification!.body!),
-              actions: [
-                TextButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
-    });
+    // messaging = FirebaseMessaging.instance;
+    // messaging.getToken().then((value){
+    //   // print(value);
+    // });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    //   print("message recieved");
+    //   print(event.notification!.body);
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return AlertDialog(
+    //           title: Text("Notification"),
+    //           content: Text(event.notification!.body!),
+    //           actions: [
+    //             TextButton(
+    //               child: Text("Ok"),
+    //               onPressed: () {
+    //                 Navigator.of(context).pop();
+    //               },
+    //             )
+    //           ],
+    //         );
+    //       });
+    // });
+    // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    //   print('Message clicked!');
+    // });
     place = temp;
     textController = TextEditingController();
     () async {
@@ -248,7 +252,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       backgroundColor: const Color(0xFFFFFFFF),
                       minimumSize: const Size.fromHeight(40),
                     ),
-                    onPressed: (){print("your orders");},
+                    onPressed: (){
+                      Navigator.push(context,MaterialPageRoute(builder: (context) => Orders(number: widget.number)));
+                    },
                     child: const Text("Your Orders",
                         style: TextStyle(
                             color: Color(0xFF000000),
@@ -265,7 +271,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       backgroundColor: const Color(0xFFFFFFFF),
                       minimumSize: const Size.fromHeight(40),
                     ),
-                    onPressed: (){print("medical record");},
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Records(number: widget.number)));
+                    },
                     child: const Text("Medical Records",
                         style: TextStyle(
                             color: Color(0xFF000000),
@@ -372,7 +380,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             size: 30,
                           ),
                           onPressed: () {
-                            print('search button pressed ...');
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>SearchOptions(number: widget.number)));
                           },
                         ),
                       ),
@@ -380,47 +388,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         child: Align(
                           alignment: const AlignmentDirectional(0, 0.1),
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
-                            child: TextFormField(
-                              controller: textController,
-                              autofocus: false,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                hintText: 'Search for doctors',
-                                hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
+                            padding: const EdgeInsetsDirectional.fromSTEB(15, 0, 0, 0),
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                Navigator.push(context,MaterialPageRoute(builder: (context)=>SearchOptions(number: widget.number)));
+                              },
+                              child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text("Search for Doctors",
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'Poppins', color: Color(0xFF808080)),
                                 ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedErrorBorder: UnderlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                filled: true,
-                                fillColor: Colors.white,
-                              ),
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.black, fontFamily: 'Poppins'),
-                            ),
+                              )
+                            )
                           ),
                         ),
                       ),
@@ -790,6 +770,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             child: const Text(''),
                             onPressed: () {
                               print('works222???');
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> MedicinePage(number: widget.number)));
                             },
                           ),
                         ),
@@ -869,7 +850,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 ),
                                 child: const Text(''),
                                 onPressed: () {
-                                  print('works_medical_report???');
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ReportPrediction(number: widget.number)));
                                 },
                               ),
                             ),

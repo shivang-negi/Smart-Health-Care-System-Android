@@ -52,7 +52,7 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
       var directory = await getApplicationDocumentsDirectory();
       path = '${directory.path}/chat_db.db';
       Database db = await initdb();
-      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
+      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL, image TEXT NOT NULL)");
     }();
   }
 
@@ -65,7 +65,7 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
 
   initdb() async{
     var db = await openDatabase(path, version: 1, onCreate: (db,version) async {
-      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
+      await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL, image TEXT NOT NULL)");
     });
     return db;
   }
@@ -173,15 +173,26 @@ class _PhysicianWidgetState extends State<PhysicianWidget> {
                                     Database db = await initdb();
                                     var result = await db.query('chat',where: 'id = ${number[index]}');
                                     if(result.isEmpty) {
-                                      await db.execute('INSERT INTO chat VALUES(${number[index]},"${name[index]}")');
+                                      var profile = ('https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg');
+                                      final query = await FirebaseFirestore.instance
+                                          .collection('Doctor')
+                                          .limit(1)
+                                          .where('number', isEqualTo: number[index].toString())
+                                          .get();
+                                      if(query.size>0 && query.docs[0]['picture']!='') {
+                                        profile = query.docs[0]['picture'];
+                                        print(query.docs[0]['picture']);
+                                      }
+                                      print(profile);
+                                      await db.execute('INSERT INTO chat VALUES(${number[index]},"${name[index]}","$profile")');
                                     }
                                     _socket.emit('message_request',{
                                       'receiver': number[index],
                                       'sender'  : widget.number
                                     });
                                   }();
-                                  Future.delayed(const Duration(seconds: 1)).then((value) => {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatHomePage(number: widget.number)))
+                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ChatHomePage(number: widget.number)));
                                   });
                                 }, child: const Text("Yes"))
                               ],

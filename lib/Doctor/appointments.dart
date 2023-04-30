@@ -38,10 +38,11 @@ class _ChatHomePageState extends State<ChatHomePage> {
   addNewMessages(data) async {
 
     for(int i=0;i<data.length;i++) {
+
       var num = data[i]['sender'];
       bool flag = false;
-      for(var i=0;i<result.length;i++) {
-        if(num==result[i]['id']) {
+      for(var i=0;i<number.length;i++) {
+        if(num.toString()==number[i].toString()) {
           flag = true;
           break;
         }
@@ -63,7 +64,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
       image.add(_profilepic);
       number.add(num);
 
-      db.execute('INSERT INTO chat VALUES($num,"$_name")');
+      db.execute('INSERT INTO chat VALUES($num,"$_name","$_profilepic")');
     }
     setState(() {
       value = number.length;
@@ -80,43 +81,16 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
     () async {
       try {
-        final query = await FirebaseFirestore.instance
-            .collection('Doctor')
-            .get();
-
         var directory = await getApplicationDocumentsDirectory();
         path = '${directory.path}/chat_db.db';
-        db = await openDatabase(path);
+        db = await openDatabase(path, version: 1, onCreate: (db,version) async {
+          await db.execute("CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, name TEXT NOT NULL, image TEXT NOT NULL)");
+        });
         result = await db.query('chat');
         for (int i = 0; i < result.length; i++) {
           number.add(result[i]['id']);
           name.add(result[i]['name']);
-
-          // var last_msg = await db.rawQuery('SELECT * FROM table ORDER BY column DESC LIMIT 1;');
-          // print(last_msg);
-
-          for (int j = 0; j < query.size; j++) {
-            var num = (query.docs[j]['number']);
-            var num2 = '${result[i]['id']}';
-            if (num == num2) {
-              image.add(query.docs[j]['picture']);
-              break;
-            }
-          }
-          if(image.length<number.length) {
-            var profile = ('https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg');
-            final query = await FirebaseFirestore.instance
-                .collection('Users')
-                .limit(1)
-                .where('Phone Number', isEqualTo: result[i]['id'].toString())
-                .get();
-
-            if(query.size>0 && query.docs[0]['Profile']!='') {
-              profile = query.docs[0]['Profile'];
-              print(profile);
-            }
-            image.add(profile);
-          }
+          image.add(result[i]['image']);
         }
       }
       catch(e) {
@@ -143,9 +117,19 @@ class _ChatHomePageState extends State<ChatHomePage> {
     super.dispose();
   }
 
-  String getText(number,name) {
-    String str = "Start your consultation with $name!";
-
+  Future<String> getLastMessage(number,naam) async {
+    var res = await db.query('room$number',orderBy: 'id DESC',limit: 1);
+    String str = "Start your consultation with $naam!";
+    if(res.isNotEmpty) {
+      if(res[0]['type']=='text') {
+        str = res[0]['message'] as String;
+      } else if(res[0]['type']=='image') {
+        str = 'image:${res[0]['message'] as String}';
+      } else {
+        str = 'file:${res[0]['message'] as String}';
+      }
+    }
+    if(str.length>35) str = '${str.substring(0,32)}...';
     return str;
   }
 
@@ -218,12 +202,25 @@ class _ChatHomePageState extends State<ChatHomePage> {
                               fontWeight: FontWeight.bold
                           ),
                         ),
-                        subtitle: Text(
-                          getText(number[index], name[index]),
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
+                        subtitle: FutureBuilder<String>(
+                          future: getLastMessage(number[index], name[index]),
+                          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData) {
+                              String? str = snapshot.data;
+                              return Text(str!, style: const TextStyle(
+                                fontFamily: 'Poppins',
+                              ));
+                            } else if (snapshot.hasError) {
+                              return Text("Start your consultation with ${name[index]}!", style: const TextStyle(
+                                fontFamily: 'Poppins',
+                              ));
+                            } else {
+                              return Text("Start your consultation with ${name[index]}!", style: const TextStyle(
+                                fontFamily: 'Poppins',
+                              ));
+                            }
+                          },
+                        )
                       )
                       ,SizedBox(
                         height: double.infinity,

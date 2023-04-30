@@ -3,7 +3,7 @@
 Update 3:
   
 Removed Authentication bugs  
-Set up Firebase storage for User profile pictures  
+Set up Firebase storage for User data storage  
 Modified Register User page  
 Added profile page  
   
@@ -19,3 +19,5 @@ Update 5:
 Setup Server Side Database  
 Added Chat Functionality  
 Added Image and File Sharing  
+Integrated ML model for Folliculitis Classifier  
+Created new pages for prediction model and medicines  

@@ -204,6 +204,7 @@ class _ChatPageState extends State<ChatUI> {
       user: types.User(id: widget.user),
     ),
   );
+
   void _addMessage(types.Message message) {
     setState(() {
       _messages.insert(0, message);

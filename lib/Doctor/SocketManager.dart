@@ -5,7 +5,7 @@ class SocketManager {
 
   static io.Socket getSocket() {
     if (_socket == null) {
-      _socket = io.io('https://99c6-103-248-123-94.in.ngrok.io', <String, dynamic>{
+      _socket = io.io('https://87b9-103-248-123-90.ngrok-free.app', <String, dynamic>{
         'transports': ['websocket'],
         'forceNew':true
       });
