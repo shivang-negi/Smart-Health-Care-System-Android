@@ -1,5 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'orders_and_record.dart';
 
 class MedicinePage extends StatefulWidget {
   String number;
@@ -26,7 +30,7 @@ class _MedicineState extends State<MedicinePage> {
     'Doxycycline Hyclate',
     'H.P. Acthar Gel',
     'Metoprolol ER',
-    'tesamorelin injection',
+    'Tesamorelin injection',
                   ];
 
   var medicineImages = [
@@ -37,8 +41,8 @@ class _MedicineState extends State<MedicinePage> {
     'https://5.imimg.com/data5/SELLER/Default/2020/12/LO/TS/ZI/3894606/azithromycin-tablets-250-mg-500x500.jpg',
     'https://www.empr.com/wp-content/uploads/sites/7/2018/12/79136af1dbdc4f37a17c6d01cf2c5b7f-ventolin_291396.jpg',
     'https://genericswow.com/wp-content/uploads/2022/02/phalexin-500mg-cephalexin-capsules-ip-1.jpg',
-    'https://integratedlaboratories.in/wp-content/uploads/2022/08/Paracetamol-500mg-Tablets-Intemol-500-2.jpeg',
-    'https://5.imimg.com/data5/SELLER/Default/2022/7/LX/MY/YT/21276273/bacitracin-ointment-usp-500x500.jpg',
+    'https://crushes.in/wp-content/uploads/2022/12/500mg-paracetamol-tablet-500x500-removebg-preview.png',
+    'https://img.medscapestatic.com/pi/features/drugdirectory/octupdate/GWL02801.jpg',
     'https://cpimg.tistatic.com/04314235/b/5/Doxycycline-Hyclate-Lactic-Acid-Bacillus-Capsule.jpg',
     'https://static01.nyt.com/images/2017/01/29/business/29gret1/29gret1-superJumbo.jpg',
     'https://5.imimg.com/data5/SELLER/Default/2021/3/FN/HY/LO/2938236/whatsapp-image-2021-03-17-at-2-41-14-pm-2--1000x1000.jpeg',
@@ -134,13 +138,7 @@ class _MedicineState extends State<MedicinePage> {
                       ),
                       child: const Text(''),
                       onPressed: () {
-                        // Navigator.push(context,MaterialPageRoute(builder: (context)=> ChatUI(
-                        //     user: _user,
-                        //     receiver: number[index].toString(),
-                        //     receiver_name: name[index],
-                        //     path: path
-                        // )));
-                        print(meds[index]);
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=> ViewMedicine(number: widget.number,mname: meds[index], mpic: medsImage[index], mcost: prices[index])));
                       },
                     ),
                   ),
@@ -254,17 +252,179 @@ class _MedicineState extends State<MedicinePage> {
 }
 
 
-class AddMedicine extends StatefulWidget {
-  const AddMedicine({Key? key}) : super(key: key);
+class ViewMedicine extends StatefulWidget {
+  final String number,mname, mpic, mcost;
+  const ViewMedicine({Key? key,required this.number, required this.mname, required this.mpic, required this.mcost}) : super(key: key);
 
   @override
-  State<AddMedicine> createState() => _AddMedicineState();
+  State<ViewMedicine> createState() => _ViewMedicineState();
 }
 
-class _AddMedicineState extends State<AddMedicine> {
+class _ViewMedicineState extends State<ViewMedicine> {
+
+  late String path;
+  late Database db;
+  bool enable = true;
+  String text = "Add to Orders";
+
+  initdb() async {
+    var db = await openDatabase(path, version: 1, onCreate: (db,version) async {
+      await db.execute("CREATE TABLE IF NOT EXISTS medicine(name TEXT PRIMARY KEY, image TEXT NOT NULL, cost TEXT NOT NULL)");
+    });
+    return db;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    () async {
+      var directory = await getApplicationDocumentsDirectory();
+      path = '${directory.path}/chat_db.db';
+      db = await initdb();
+      await db.execute("CREATE TABLE IF NOT EXISTS medicine(name TEXT PRIMARY KEY, image TEXT NOT NULL, cost TEXT NOT NULL)");
+      var result = await db.query('medicine');
+      for (int i = 0; i < result.length; i++) {
+        var mp = result[i];
+        if(mp['name'].toString() == widget.mname) {
+          setState(() {
+            enable = false;
+            text = "Already in Orders";
+          });
+          break;
+        }
+      }
+    }();
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1E1285),
+        automaticallyImplyLeading: false,
+        leading: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              backgroundColor: const Color(0xFF1E1285),
+              fixedSize: const Size(50,50)
+          ),
+          child: const Icon(Icons.arrow_back_rounded,
+            color: Colors.white,
+            size: 30,),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 7, 0),
+            child:IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Orders(number: widget.number)));
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
+          )
+        ],
+      ),
+      body: ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 200,
+            child: CachedNetworkImage(
+              imageUrl: widget.mpic,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+          ),
+          Padding(padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 10, 0),
+            child: Text(widget.mname,
+              style: const TextStyle(
+                fontSize: 24,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF000000),
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsetsDirectional.fromSTEB(20, 0, 10, 10),
+            child: Text('By XYZ Healthcare Medicines',
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF808080),
+              ),
+            ),
+          ),
+          Padding(padding: const EdgeInsetsDirectional.fromSTEB(20, 45, 10, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.mcost,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF000000),
+                      ),
+                    ),
+                    const Text(
+                      'Inclusive of all taxes',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF808080),
+                      ),
+                    )
+                  ],
+                ),
+                ElevatedButton(
+                    onPressed: (enable==false)?null:() {
+                        () async {
+                          await db.execute("INSERT INTO medicine VALUES('${widget.mname}','${widget.mpic}','${widget.mcost}')");
+                        }();
+                        Fluttertoast.showToast(
+                            msg: "Item added to orders",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 5,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                        setState(() {
+                          enable = false;
+                          text = "Already in Orders";
+                        });
+                    },
+                    child: Text(
+                      text,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFFFFFF),
+                      ),
+                    )
+                  )
+              ],
+            )
+          )
+        ],
+      ),
+    );
   }
 }
 
