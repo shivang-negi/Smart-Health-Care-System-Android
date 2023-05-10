@@ -63,15 +63,59 @@ const server = http.createServer(async (req, res) => {
     var command = `python -W ignore predict.py ${str}`;
     console.log(command);
     exec(command,
-        { cwd: 'C:\\Users\\ACER\\Downloads\\symptoms to disease\\' }, 
-        (err, stdout, stderr) => {
-          if (err) {
-            res.end("Error fetching data!");
-            return;
-          }
-          var out = stdout.substring(2,stdout.length - 4);
-          res.end(out);
+      { cwd: 'C:\\Users\\ACER\\Downloads\\symptoms to disease\\' }, 
+      (err, stdout, stderr) => {
+        if (err) {
+          res.end("Error fetching data!");
+          return;
+        }
+        var out = stdout.substring(2,stdout.length - 4);
+        res.end(out); 
+      });
+  }
+
+  if(type=="3") {
+    const file = urlParts.query.filename;
+    const file_url = urlParts.query.pdf_file;
+
+    const localPath = 'C:\\Users\\ACER\\Downloads\\report to advice\\'+file+'.pdf';
+
+    const stream = fs.createWriteStream(localPath);
+    var flag = false;
+
+    https.get(file_url, (response) => {
+      response.pipe(stream);
+
+      stream.on('finish', () => {
+        stream.close(() => {
+          console.log('PDF downloaded successfully.');
+          
+          var str = file+'.pdf';
+          var command = `python -W ignore extract_words_from_PDF.py ${str}`;
+          console.log(command);
+          exec(command,
+            { cwd: 'C:\\Users\\ACER\\Downloads\\report to advice\\' }, 
+            (err, stdout, stderr) => {
+              if (err) {
+                res.end("Error fetching data!");
+                return;
+              }
+              res.end(stdout); 
+            });
+
+
         });
+      });
+    }).on('error', (err) => {
+      fs.unlink(localPath, () => {
+        flag = true;
+      });
+    });
+
+    if(flag) {
+      res.end("Error downloading pfd!");
+      return;
+    }
   }
 });
 
